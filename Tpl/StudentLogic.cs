@@ -1,4 +1,6 @@
 namespace Tpl;
+#pragma warning disable IDE0079
+#pragma warning disable CA1849
 
 public static class StudentLogic
 {
@@ -43,14 +45,22 @@ public static class StudentLogic
 
     public static Task WaitingForChildrenToComplete()
     {
-        var task = Task.Factory.StartNew(static () =>
+        var scheduler = TaskScheduler.Default;
+        var task = Task.Factory.StartNew(
+            () =>
         {
             Task.Factory.StartNew(
-                static () =>
+                () =>
                 {
-                    Task.Delay(TimeSpan.FromSeconds(7)).Wait();
-                }, TaskCreationOptions.AttachedToParent);
-        });
+                    Task.Delay(TimeSpan.FromSeconds(100)).Wait();
+                },
+                CancellationToken.None,
+                TaskCreationOptions.AttachedToParent,
+                scheduler);
+        },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            scheduler);
 
         Task.Delay(TimeSpan.FromSeconds(1)).Wait();
         return task;
@@ -126,5 +136,4 @@ public static class StudentLogic
             return "Foo Completed";
         });
     }
-
 }
