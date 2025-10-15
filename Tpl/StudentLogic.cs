@@ -31,8 +31,13 @@ public static class StudentLogic
 
     public static Task Running()
     {
-        var task = Task.Run(() => { Task.Delay(TimeSpan.FromSeconds(5)).Wait(); });
-        Task.Delay(TimeSpan.FromSeconds(2)).Wait();
+        var task = Task.Run(async () =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(3));
+        });
+
+        _ = Task.Delay(TimeSpan.FromSeconds(2));
+
         return task;
     }
 
